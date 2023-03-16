@@ -14,7 +14,7 @@
  * if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//	_map_( A, 1, 0 ) /* ( AD1 )               Digital pin 23 */ \
+//	_map_( A, 1, 0 ) /* ( AD1 )               Digital pin 23 */ 
 
 #define LED_MAPPING_TABLE(_map_) \
 	\

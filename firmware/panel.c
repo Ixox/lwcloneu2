@@ -306,12 +306,12 @@ void panel_init(void)
 	#endif
 
 #ifdef ACCELGYRO_MPU6050
-	i2c_init();
+	// i2c_init();
 
-    i2c_start(MPU_addr);       // set device address and write mode
-	i2c_write(0x6B);
-	i2c_write(0x00);
-    i2c_stop();
+    // i2c_start(MPU_addr);       // set device address and write mode
+	// i2c_write(0x6B);
+	// i2c_write(0x00);
+    // i2c_stop();
 
 #endif
 
@@ -895,6 +895,7 @@ static uint8_t ReportAccelGyro()
 #endif
 
 #ifdef ACCELGYRO_MPU6050
+
 
 static uint8_t ReportAccelGyro()
 {

@@ -2,5 +2,35 @@
     "files.associations": {
         "hwconfig.h": "c",
         "delay.h": "c"
+    },
+    "files.exclude": {
+        "**/*.o": true,
+        "**/*.lst": true,
+        "**/*.d": true,
+        "**/*.hex": true,
+        "**/*.elf": true,
+        "**/*.lss": true,
+        "**/*.map": true,
+        "**/*.sym": true,
+        "**/*.bin": true,
+        "**/*.eep": true,
+        "**/win32/": true,
+        "firmware/lufa/**/*.o": true,
+        "firmware/lufa/**/*.d": true,
+        "firmware/lufa/**/*.elf": true,
+        "firmware/lufa/**/*.hex": true,
+        "firmware/lufa/**/*.eep": true,
+        "firmware/lufa/**/*.sym": true,
+        "firmware/lufa/**/*.bin": true,
+        "firmware/lufa/**/*.lss": true,
+        "firmware/lufa/**/*.map": true,
+        "firmware/lufa/**/*.bak": true,
+        "firmware/lufa/**/*.class": true,
+        "firmware/lufa/LUFA/StudioIntegration/ProjectGenerator/*": true,
+        "firmware/lufa/LUFA/StudioIntegration/DocBook/*": true,
+        "firmware/arduino_leonardo/**": true,
+        "firmware/arduino_uno/**": true,
+        "firmware/arduino_promicro/**": true,
+        "firmware/breakout_32u2/**": true
     }
 }
