@@ -24,7 +24,7 @@ void millis_init()
 
     // Init led timer
  	// Init LED36 Out
-	DDRC = 0b00000010;
+	DDRB |= 0b10000000;
 	// DDRB = 0b10000000;
 	// PORTC = 0b00000010;
   	// PORTB = 0b10000000;
@@ -52,8 +52,8 @@ ISR (TIMER3_COMPA_vect)
     timer1_millis++;
     long checkChange = timer1_millis >> 10;
     if ((checkChange & 0x1) == 1) {
-        PORTC = 0b00000010;
+        PORTB |= 0b10000000;
     } else {
-	    PORTC = 0b00000000;		
+	    PORTB &= 0b01111111;		
     }
 }

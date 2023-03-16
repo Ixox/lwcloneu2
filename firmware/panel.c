@@ -110,7 +110,10 @@ static int8_t mouse_y_count = 0;
 #endif
 #endif
 
+
+
 #if defined(ENABLE_ANALOG_INPUT)
+
 static uint16_t adc_values[NUM_ADC_CHANNELS] = {0};
 static const uint8_t adc_mux_table[NUM_ADC_CHANNELS] = {
 	#define MAP(port, pin, mux, minval, maxval, joyid, axis) mux,
@@ -900,14 +903,14 @@ static uint8_t ReportAccelGyro()
 static uint8_t ReportAccelGyro()
 {
 
-	int8_t acc_x = -25;
-	int8_t acc_y = 35;
+	int8_t acc_x = 0;
+	int8_t acc_y = 0;
 	int8_t plunger_z = 0;
 
 
 	#if defined(ENABLE_ANALOG_INPUT) && defined(ADC_MAPPING_TABLE)
 	#define MAP(port, pin, mux, minval, maxval, joyid, axis) \
-		if ((axis == 2) && (joyid == ID_AccelGyro)) { plunger_z  = joyval8(ADC_getvalue(port##pin##_adcindex), (int16_t)(minval * 254), (int16_t)(maxval * 254)); } \
+		if ((axis == 2) && (joyid == ID_AccelGyro)) { 	plunger_z  = joyval8(ADC_getvalue(port##pin##_adcindex), (int16_t)(minval * 254), (int16_t)(maxval * 254)); }
 	ADC_MAPPING_TABLE(MAP)
 	#undef MAP
 	#endif
@@ -929,10 +932,10 @@ AcZ=Wire.read()<<8|Wire.read();
 	ReportBuffer[1] = acc_x;
 	ReportBuffer[2] = acc_y;
 	ReportBuffer[3] = plunger_z;
-	ReportBuffer[4] = 0;
-	ReportBuffer[5] = 0;
-	ReportBuffer[6] = 0;
-	ReportBuffer[7] = 0;
+	ReportBuffer[4] = 32;
+	ReportBuffer[5] = 127;
+	ReportBuffer[6] = 12;
+	ReportBuffer[7] = 0b00100;
 
 	return 8;
 }

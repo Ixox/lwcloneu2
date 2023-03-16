@@ -14,12 +14,12 @@
  * if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//	_map_( A, 1, 0 ) /* ( AD1 )               Digital pin 23 */ 
+//	_map_( B, 7, 0 ) /* ( D13 )               Digital pin 13 - led */ \
 
 #define LED_MAPPING_TABLE(_map_) \
 	\
 	_map_( A, 0, 0 ) /* ( AD0 )               Digital pin 22 */ \
-	_map_( B, 7, 0 ) /* ( D13 )               Digital pin 13 - led */ \
+	_map_( A, 1, 0 ) /* ( AD1 )               Digital pin 23 */ \
 	_map_( A, 2, 0 ) /* ( AD2 )               Digital pin 24 */ \
 	_map_( A, 3, 0 ) /* ( AD3 )               Digital pin 25 */ \
 	_map_( A, 4, 0 ) /* ( AD4 )               Digital pin 26 */ \
