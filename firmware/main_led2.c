@@ -14,26 +14,34 @@
  * if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef DEVCONFIG_H__INCLUDED
-#define DEVCONFIG_H__INCLUDED
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/wdt.h>
+#include <avr/sleep.h>
+#include <avr/delay.h>
 
-#define DEBUGLEVEL 2
 
+int extValue = 0;
 
-/****************************************
- USB device config
-****************************************/
+int main(void)
+{
+//	clock_init();
 
-#define ENABLE_LED_DEVICE
+	// Led 36
+	// _map_( C, 1, 0 ) /* ( A9 )                Digital pin 36 */ 
+	DDRC = 0b00000010;
+	DDRB = 0b10000000;
 
-#define ENABLE_PANEL_DEVICE
-#define NUM_JOYSTICKS 0
-#define USE_MOUSE 0
-#define USE_CONSUMER 1
-#define USE_KEYBOARD 1
+	PORTC = 0b00000010;
 
-#define USE_ACCELGYRO 1
-#define ACCELGYRO_MPU6050 1
-
-#endif
+	while (1) {
+		_delay_ms(500);
+  	    PORTB = 0b00000000;
+		PORTC = 0b00000010;
+		
+		_delay_ms(500);
+    	PORTB = 0b10000000;
+		PORTC = 0b00000000;		
+	}
+}
 

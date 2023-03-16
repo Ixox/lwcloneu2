@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "hwconfig.h": "c",
+        "delay.h": "c"
+    }
+}

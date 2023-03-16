@@ -21,15 +21,36 @@
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 #include <avr/sleep.h>
+#include <avr/delay.h>
 
 #include <hwconfig.h>
 #include "comm.h"
 #include "led.h"
 #include "panel.h"
 
+int extValue = 0;
 
 int main(void)
 {
+/* TEST
+	DDRA = 0b00000001;
+	DDRB = 0b10000000;
+	DDRC = 0b00000010;
+
+
+	while (1) {
+		_delay_ms(200);
+  	    PORTA = 0b00000000;
+  	    PORTB = 0b00000000;
+		PORTC = 0b00000010;
+		
+		_delay_ms(200);
+    	PORTA = 0b00000001;
+    	PORTB = 0b10000000;
+		PORTC = 0b00000000;		
+	}
+
+*/
 	clock_init();
 	comm_init();
 	led_init();

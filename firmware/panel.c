@@ -35,6 +35,14 @@
 #include "keydefs.h"
 #include "clock.h"
 
+#ifdef ACCELGYRO_MPU6050
+#include "i2cmaster/i2cmaster.h"
+
+const int MPU_addr=0x68;
+
+#endif
+
+
 
 #if !defined(PANEL_TASK)
 	void panel_init(void) {}
@@ -296,6 +304,17 @@ void panel_init(void)
 
 	ADC_init();
 	#endif
+
+#ifdef ACCELGYRO_MPU6050
+	i2c_init();
+
+    i2c_start(MPU_addr);       // set device address and write mode
+	i2c_write(0x6B);
+	i2c_write(0x00);
+    i2c_stop();
+
+#endif
+
 };
 
 static void SetNeedUpdate(uint8_t index)
@@ -796,6 +815,8 @@ static uint8_t ReportJoystick(uint8_t id)
 
 #if (USE_ACCELGYRO)
 
+#ifndef ACCELGYRO_MPU6050
+
 static uint8_t ReportAccelGyro()
 {
 	uint8_t id = ID_AccelGyro;
@@ -871,6 +892,52 @@ static uint8_t ReportAccelGyro()
 
 	return 8;
 }
+#endif
+
+#ifdef ACCELGYRO_MPU6050
+
+static uint8_t ReportAccelGyro()
+{
+
+	int8_t acc_x = -25;
+	int8_t acc_y = 35;
+	int8_t plunger_z = 0;
+
+
+	#if defined(ENABLE_ANALOG_INPUT) && defined(ADC_MAPPING_TABLE)
+	#define MAP(port, pin, mux, minval, maxval, joyid, axis) \
+		if ((axis == 2) && (joyid == ID_AccelGyro)) { plunger_z  = joyval8(ADC_getvalue(port##pin##_adcindex), (int16_t)(minval * 254), (int16_t)(maxval * 254)); } \
+	ADC_MAPPING_TABLE(MAP)
+	#undef MAP
+	#endif
+
+/*
+	i2c_start(MPU_addr);
+	i2c_write(0x3B);
+	i2c_stop();
+
+	i2c_read()
+
+Wire.requestFrom(MPU_addr,14,true);
+AcX=Wire.read()<<8|Wire.read();
+AcY=Wire.read()<<8|Wire.read();
+AcZ=Wire.read()<<8|Wire.read();
+*/
+
+	ReportBuffer[0] = ID_AccelGyro;
+	ReportBuffer[1] = acc_x;
+	ReportBuffer[2] = acc_y;
+	ReportBuffer[3] = plunger_z;
+	ReportBuffer[4] = 0;
+	ReportBuffer[5] = 0;
+	ReportBuffer[6] = 0;
+	ReportBuffer[7] = 0;
+
+	return 8;
+}
+#endif
+
+
 
 #endif
 
