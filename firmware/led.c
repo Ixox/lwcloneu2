@@ -20,7 +20,7 @@
 
 #include <hwconfig.h>
 #include "led.h"
-
+#include "comm.h"
 
 #if !defined(LED_TIMER_vect)
 	void led_init(void) {}
@@ -28,9 +28,14 @@
 #else
 
 
-#define MAP(X, pin, inv) X##pin##_index,
+#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) X##pin##_index,
 enum { LED_MAPPING_TABLE(MAP) NUMBER_OF_LEDS };
 #undef MAP
+
+#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) X##pin##_timer_delay = timer_delay,
+enum { LED_MAPPING_TABLE(MAP)  };
+#undef MAP
+
 
 #define NUMBER_OF_BANKS   ((NUMBER_OF_LEDS + 7) / 8)
 #define MAX_PWM 49
@@ -45,6 +50,11 @@ struct {
 	volatile uint8_t enable;
 	volatile uint8_t mode;
 } g_LED[NUMBER_OF_BANKS * 8];
+
+// Xavier Hosxe :
+// Counter to turn down the current after some time
+// Avoid the toys / Solenoid to burn
+uint16_t LedTimer[NUMBER_OF_BANKS * 8];
 
 volatile uint16_t g_dt = 256;  // access is not atomic, but the read in the pwm loop is not critical
 
@@ -91,7 +101,20 @@ static void update_state(uint8_t * p5bytes)
 
 		for (int8_t i = 0; i < 8; i++)
 		{
-			g_LED[k * 8 + i].enable = b & 0x01;
+			uint8_t ledNumber = k * 8 + i;
+			uint8_t enable = b & 0x01;
+			// Start timer to turn down currant later
+			if (enable) {
+				LedTimer[ledNumber] = 0;
+				if (g_LED[ledNumber].enable == 0) {
+					DbgOut(DBGINFO, "%i ON", ledNumber); \
+				}
+			} else {
+				if (g_LED[ledNumber].enable > 0) {
+					DbgOut(DBGINFO, "%i off", ledNumber); \
+				}
+			}
+			g_LED[ledNumber].enable = enable;
 			b >>= 1;
 		}
 	}
@@ -207,16 +230,34 @@ ISR(LED_TIMER_vect)
 	}
 
 	// set or clear all defined pins
-
-	#define MAP(X, pin, inv) if ((pwm[X##pin##_index] > counter) == (!inv)) { PORT##X |= (1 << pin); } else { PORT##X &= ~(1 << pin); }
+	#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) if ((pwm[X##pin##_index] > counter) == (!inv)) { PORT##X |= (1 << pin); } else { PORT##X &= ~(1 << pin); }
 	LED_MAPPING_TABLE(MAP)
 	#undef MAP
+
+
+	// Xavier Hosxe
+	// Turn down currant if timer reached
+	#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) \
+	if (g_LED[X##pin##_index].enable && timer_delay > 0) { \
+		if (LedTimer[X##pin##_index] < X##pin##_timer_delay) { \
+			LedTimer[X##pin##_index]++; \
+		} else if (LedTimer[X##pin##_index] == X##pin##_timer_delay) { \
+			g_LED[X##pin##_index].mode = timer_delay_pwm; \
+			LedTimer[X##pin##_index]++; \
+			DbgOut(DBGINFO, "%i down to %i", X##pin##_index, timer_delay_pwm); \
+		} \
+	}
+	LED_MAPPING_TABLE(MAP)
+	#undef MAP
+
+	//
+
 }
 
 
 static void led_ports_init(void)
 {
-	#define MAP(X, pin, inv) \
+	#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) \
 		PORT##X &= ~(1 << pin); \
 		DDR##X  |= (1 << pin);
 	LED_MAPPING_TABLE(MAP)

@@ -14,18 +14,24 @@
  * if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//	_map_( B, 7, 0 ) /* ( D13 )               Digital pin 13 - led */ 
+//	_map_( B, 7, 0 ) /* ( D13 )               Digital pin 13 - led */ \
+
+
+/*
+ * 4th param is a timer delay after which pwm will be activate dot turn down currant. Scale is 200uS. So 1000 = 200ms
+ * 5th param is the PWM value (0-49) to use to slow down currant
+ */
 
 #define LED_MAPPING_TABLE(_map_) \
 	\
-	_map_( A, 0, 0 ) /* ( AD0 )               Digital pin 22 */ \
-	_map_( A, 1, 0 ) /* ( AD1 )               Digital pin 23 */ \
-	_map_( A, 2, 0 ) /* ( AD2 )               Digital pin 24 */ \
-	_map_( A, 3, 0 ) /* ( AD3 )               Digital pin 25 */ \
-	_map_( A, 4, 0 ) /* ( AD4 )               Digital pin 26 */ \
-	_map_( A, 5, 0 ) /* ( AD5 )               Digital pin 27 */ \
-	_map_( A, 6, 0 ) /* ( AD6 )               Digital pin 28 */ \
-	_map_( A, 7, 0 ) /* ( AD7 )               Digital pin 29 */ \
+	_map_( A, 0, 0, 2000, 8 ) /* ( AD0 )               Digital pin 22 */ \
+	_map_( A, 1, 0, 2000, 8 ) /* ( AD1 )               Digital pin 23 */ \
+	_map_( A, 2, 0, 0, 0 ) /* ( AD2 )               Digital pin 24 */ \
+	_map_( A, 3, 0, 0, 0 ) /* ( AD3 )               Digital pin 25 */ \
+	_map_( A, 4, 0, 0, 0 ) /* ( AD4 )               Digital pin 26 */ \
+	_map_( A, 5, 0, 0, 0 ) /* ( AD5 )               Digital pin 27 */ \
+	_map_( A, 6, 0, 0, 0 ) /* ( AD6 )               Digital pin 28 */ \
+	_map_( A, 7, 0, 0, 0 ) /* ( AD7 )               Digital pin 29 */ \
 	\
 	/* end */
 

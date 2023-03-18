@@ -35,9 +35,10 @@
 #include "keydefs.h"
 #include "clock.h"
 
+#include "millis_timer.h"
+
 #ifdef ACCELGYRO_MPU6050
 #include "mpu6050.h"
-#include "millis_timer.h"
 #endif
 
 
@@ -57,7 +58,7 @@ enum {
 	NUMBER_OF_INPUTS,
 	#undef MAP
 	#if defined(LED_MAPPING_TABLE)
-	#define MAP(port, pin, inv) port##pin##_index,
+	#define MAP(port, pin, inv, timer_delay, timer_delay_pwm) port##pin##_index,
 	LED_MAPPING_TABLE(MAP)
 	#undef MAP
 	#endif
@@ -284,8 +285,9 @@ static uint8_t NeedMouseUpdate(void) { return need_mouse_update; }
 
 void panel_init(void)
 {
-	#ifdef ACCELGYRO_MPU6050
 	millis_init();
+
+	#ifdef ACCELGYRO_MPU6050
 	mpu6050_init();
 	#endif
 
