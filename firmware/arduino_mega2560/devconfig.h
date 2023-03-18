@@ -17,7 +17,7 @@
 #ifndef DEVCONFIG_H__INCLUDED
 #define DEVCONFIG_H__INCLUDED
 
-// #define DEBUGLEVEL 2
+#define DEBUGLEVEL 2
 
 
 /****************************************

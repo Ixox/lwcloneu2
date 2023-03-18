@@ -36,10 +36,8 @@
 #include "clock.h"
 
 #ifdef ACCELGYRO_MPU6050
-#include "i2cmaster/i2cmaster.h"
-
-const int MPU_addr=0x68;
-
+#include "mpu6050.h"
+#include "get_millis.h"
 #endif
 
 
@@ -111,9 +109,7 @@ static int8_t mouse_y_count = 0;
 #endif
 
 
-
 #if defined(ENABLE_ANALOG_INPUT)
-
 static uint16_t adc_values[NUM_ADC_CHANNELS] = {0};
 static const uint8_t adc_mux_table[NUM_ADC_CHANNELS] = {
 	#define MAP(port, pin, mux, minval, maxval, joyid, axis) mux,
@@ -288,6 +284,11 @@ static uint8_t NeedMouseUpdate(void) { return need_mouse_update; }
 
 void panel_init(void)
 {
+	#ifdef ACCELGYRO_MPU6050
+	millis_init();
+	mpu6050_init();
+	#endif
+
 	#if (NUM_JOYSTICKS >= 1)
 	memset(&need_joystick_update[0], 0x00, sizeof(need_joystick_update));
 	#endif
@@ -308,15 +309,6 @@ void panel_init(void)
 	ADC_init();
 	#endif
 
-#ifdef ACCELGYRO_MPU6050
-	// i2c_init();
-
-    // i2c_start(MPU_addr);       // set device address and write mode
-	// i2c_write(0x6B);
-	// i2c_write(0x00);
-    // i2c_stop();
-
-#endif
 
 };
 
@@ -899,7 +891,6 @@ static uint8_t ReportAccelGyro()
 
 #ifdef ACCELGYRO_MPU6050
 
-
 static uint8_t ReportAccelGyro()
 {
 
@@ -915,27 +906,18 @@ static uint8_t ReportAccelGyro()
 	#undef MAP
 	#endif
 
-/*
-	i2c_start(MPU_addr);
-	i2c_write(0x3B);
-	i2c_stop();
-
-	i2c_read()
-
-Wire.requestFrom(MPU_addr,14,true);
-AcX=Wire.read()<<8|Wire.read();
-AcY=Wire.read()<<8|Wire.read();
-AcZ=Wire.read()<<8|Wire.read();
-*/
-
 	ReportBuffer[0] = ID_AccelGyro;
-	ReportBuffer[1] = acc_x;
-	ReportBuffer[2] = acc_y;
+	
+	uint16_t x = 0, y = 0, z = 0;
+	mpu6050_ReadData(&x, &y, &z);
+
+	ReportBuffer[1] = x >> 8;
+	ReportBuffer[2] = y >> 8;
 	ReportBuffer[3] = plunger_z;
-	ReportBuffer[4] = 32;
-	ReportBuffer[5] = 127;
-	ReportBuffer[6] = 12;
-	ReportBuffer[7] = 0b00100;
+	ReportBuffer[4] = 0;
+	ReportBuffer[5] = 0;
+	ReportBuffer[6] = 0;
+	ReportBuffer[7] = 0;
 
 	return 8;
 }

@@ -65,7 +65,7 @@
 
 #if defined(ENABLE_LED_DEVICE)
 #define USB_VENDOR_ID      0xFAFA
-#define USB_PRODUCT_ID     0x00F3   // this is used as the device identifier, 0x00F0 is '1' up to 0x00FF is '16'
+#define USB_PRODUCT_ID     0x00F0   // this is used as the device identifier, 0x00F0 is '1' up to 0x00FF is '16'
 #else
 #define USB_VENDOR_ID      0x03EB   // Atmel
 #define USB_PRODUCT_ID     0x0147

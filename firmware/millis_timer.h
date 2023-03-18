@@ -6,7 +6,7 @@
 // the CTC match value in OCR1A
 #define CTC_MATCH_OVERFLOW ((F_CPU/1000)/8)
 
-void millis_init();
-unsigned long millis();
+void millis_init(void);
+unsigned long millis(void);
 
 #endif

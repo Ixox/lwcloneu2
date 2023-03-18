@@ -28,36 +28,15 @@
 #include "led.h"
 #include "panel.h"
 
-#ifdef ACCELGYRO_MPU6050
-#include "get_millis.h"
-#endif
-
 int main(void)
 {
 
 	clock_init();
 	comm_init();
+
 	led_init();
 	panel_init();
 
-   	// DDRC = 0b00000010;
-	// DDRB = 0b10000000;
-	// PORTC = 0b00000010;
-  	// PORTB = 0b10000000;
-	// while (1) {
-	// 	_delay_ms(200);
-  	//     PORTB = 0b00000000;
-	// 	PORTC = 0b00000010;
-		
-	// 	_delay_ms(200);
-    // 	PORTB = 0b10000000;
-	// 	PORTC = 0b00000000;		
-	// }
-
-
-#ifdef ACCELGYRO_MPU6050
-	millis_init();
-#endif
 
 	set_sleep_mode(SLEEP_MODE_IDLE);
 
