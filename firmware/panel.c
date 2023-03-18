@@ -37,7 +37,7 @@
 
 #ifdef ACCELGYRO_MPU6050
 #include "mpu6050.h"
-#include "get_millis.h"
+#include "millis_timer.h"
 #endif
 
 
