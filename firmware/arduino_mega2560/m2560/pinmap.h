@@ -24,8 +24,8 @@
 
 #define LED_MAPPING_TABLE(_map_) \
 	\
-	_map_( A, 0, 0, 2000, 8 ) /* ( AD0 )               Digital pin 22 */ \
-	_map_( A, 1, 0, 2000, 8 ) /* ( AD1 )               Digital pin 23 */ \
+	_map_( A, 0, 0, 1000, 25 ) /* ( AD0 )               Digital pin 22 */ \
+	_map_( A, 1, 0, 1000, 25 ) /* ( AD1 )               Digital pin 23 */ \
 	_map_( A, 2, 0, 0, 0 ) /* ( AD2 )               Digital pin 24 */ \
 	_map_( A, 3, 0, 0, 0 ) /* ( AD3 )               Digital pin 25 */ \
 	_map_( A, 4, 0, 0, 0 ) /* ( AD4 )               Digital pin 26 */ \

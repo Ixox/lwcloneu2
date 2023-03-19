@@ -910,11 +910,11 @@ static uint8_t ReportAccelGyro()
 
 	ReportBuffer[0] = ID_AccelGyro;
 	
-	uint16_t x = 0, y = 0, z = 0;
-	mpu6050_ReadData(&x, &y, &z);
+	int x = 0, y = 0;
+	mpu6050_ReadData(&x, &y);
 
-	ReportBuffer[1] = x >> 8;
-	ReportBuffer[2] = y >> 8;
+	ReportBuffer[1] = x;
+	ReportBuffer[2] = y;
 	ReportBuffer[3] = plunger_z;
 	ReportBuffer[4] = 0;
 	ReportBuffer[5] = 0;

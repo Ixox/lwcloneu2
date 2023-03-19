@@ -22,7 +22,7 @@
 #include "twi.h"
 
 uint8_t mpu6050_init(void);
-void mpu6050_ReadData(int16_t *x, int16_t *y, int16_t *z);
+void mpu6050_ReadData(int *x, int *y);
 
 
 void mpu6050_beginTransmission(uint8_t address);
