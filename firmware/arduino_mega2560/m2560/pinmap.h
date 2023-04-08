@@ -14,24 +14,31 @@
  * if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//	_map_( B, 7, 0 ) /* ( D13 )               Digital pin 13 - led */ \
-
 
 /*
- * 4th param is a timer delay after which pwm will be activate dot turn down currant. Scale is 200uS. So 1000 = 200ms
- * 5th param is the PWM value (0-49) to use to slow down currant
+
+	_map_( B, 7, 0 )
+	_map_( A, 5, 0, 0, 0 ) 
+	_map_( A, 6, 0, 0, 0 ) 
+	_map_( A, 7, 0, 0, 0 ) 
+*/
+
+/*
+ * 4th param is a timer delay after which pwm will be activate dot turn down currant. Scale is 10ms. So 20 = 200ms
+ * Dedicate to Toys, do not use with PWM for led
  */
+
+
+//	_map_( A, 0, 0, 20) /* ( AD0 )              Digital pin 22 */ 
+//	_map_( A, 1, 0, 20 ) /* ( AD1 )             Digital pin 23 */ 
 
 #define LED_MAPPING_TABLE(_map_) \
 	\
-	_map_( A, 0, 0, 1000, 25 ) /* ( AD0 )               Digital pin 22 */ \
-	_map_( A, 1, 0, 1000, 25 ) /* ( AD1 )               Digital pin 23 */ \
-	_map_( A, 2, 0, 0, 0 ) /* ( AD2 )               Digital pin 24 */ \
-	_map_( A, 3, 0, 0, 0 ) /* ( AD3 )               Digital pin 25 */ \
-	_map_( A, 4, 0, 0, 0 ) /* ( AD4 )               Digital pin 26 */ \
-	_map_( A, 5, 0, 0, 0 ) /* ( AD5 )               Digital pin 27 */ \
-	_map_( A, 6, 0, 0, 0 ) /* ( AD6 )               Digital pin 28 */ \
-	_map_( A, 7, 0, 0, 0 ) /* ( AD7 )               Digital pin 29 */ \
+	_map_( H, 3, 0, 20, A) /* PH3 ( OC4A )	Digital pin 6 (PWM) */ \
+	_map_( H, 4, 0, 20, B) /* PH4 ( OC4B )	Digital pin 7 (PWM) */ \
+	_map_( A, 0, 0, 0, 0) /* ( AD0 )              Digital pin 22 */  \
+	_map_( A, 1, 0, 0, 0) /* ( AD1 )             Digital pin 23 */  \
+	_map_( A, 2, 0, 0, 0) /* ( AD2 )               Digital pin 24 */ \
 	\
 	/* end */
 
@@ -44,15 +51,18 @@
 
 #define SHIFT_SWITCH_INDEX   13
 
+
+//	_map_( E, 4,    MOD_LeftShift,   0                 ) /* ( OC3B/INT4 )         Digital pin 2 (PWM) */ 
+//	_map_( E, 5,    MOD_RightShift,  0                 ) /* ( OC3C/INT5 )         Digital pin 3 (PWM) */ 
+//	_map_( H, 3,    KEY_Esc,         0                 ) /* ( OC4A )              Digital pin 6 (PWM) */ 
+//	_map_( H, 4,    KEY_Enter,       0                 ) /* ( OC4B )              Digital pin 7 (PWM) */ 
+//	_map_( H, 5,    KEY_1,           KEY_P             ) /* ( OC4C )              Digital pin 8 (PWM) */ 
+
+
 #define PANEL_MAPPING_TABLE(_map_) \
 	\
-	_map_( E, 4,    MOD_LeftShift,   0                 ) /* ( OC3B/INT4 )         Digital pin 2 (PWM) */ \
-	_map_( E, 5,    MOD_RightShift,  0                 ) /* ( OC3C/INT5 )         Digital pin 3 (PWM) */ \
 	_map_( G, 5,    MOD_LeftControl, 0                 ) /* ( OC0B )              Digital pin 4 (PWM) */ \
 	_map_( E, 3,    MOD_RightControl,0                 ) /* ( OC3A/AIN1 )         Digital pin 5 (PWM) */ \
-	_map_( H, 3,    KEY_Esc,         0                 ) /* ( OC4A )              Digital pin 6 (PWM) */ \
-	_map_( H, 4,    KEY_Enter,       0                 ) /* ( OC4B )              Digital pin 7 (PWM) */ \
-	_map_( H, 5,    KEY_1,           KEY_P             ) /* ( OC4C )              Digital pin 8 (PWM) */ \
 	_map_( H, 6,    KEY_5,           KEY_5             ) /* ( OC2B )              Digital pin 9 (PWM) */ \
 	_map_( B, 4,    KEY_A,           KEY_A             ) /* ( OC2A/PCINT4 )       Digital pin 10 (PWM) */ \
 	_map_( B, 5,    KEY_S,           KEY_S             ) /* ( OC1A/PCINT5 )       Digital pin 11 (PWM) */ \

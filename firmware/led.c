@@ -27,12 +27,15 @@
 	void led_update(uint8_t *p8bytes) {}
 #else
 
+// OCCR40 to allow OOCR40 bellow. When replacing comparator by 0
+int OCR40;
 
-#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) X##pin##_index,
+
+#define MAP(X, pin, inv, pwm_delay, pwm_compare_register) X##pin##_index,
 enum { LED_MAPPING_TABLE(MAP) NUMBER_OF_LEDS };
 #undef MAP
 
-#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) X##pin##_timer_delay = timer_delay,
+#define MAP(X, pin, inv, pwm_delay, pwm_compare_register) X##pin##_pwm_delay = pwm_delay,
 enum { LED_MAPPING_TABLE(MAP)  };
 #undef MAP
 
@@ -49,12 +52,13 @@ enum { LED_MAPPING_TABLE(MAP)  };
 struct {
 	volatile uint8_t enable;
 	volatile uint8_t mode;
+	char pwm_comparator;
 } g_LED[NUMBER_OF_BANKS * 8];
 
 // Xavier Hosxe :
 // Counter to turn down the current after some time
 // Avoid the toys / Solenoid to burn
-uint16_t LedTimer[NUMBER_OF_BANKS * 8];
+uint16_t ToyTimer[NUMBER_OF_BANKS * 8];
 
 volatile uint16_t g_dt = 256;  // access is not atomic, but the read in the pwm loop is not critical
 
@@ -68,6 +72,22 @@ static void led_ports_init(void);
 
 void led_init(void)
 {
+
+#ifdef ENABLE_PWM_TIMER4
+	// Store pwm_delay
+	#define CHAR0 '0'
+	#define CHARA 'A'
+	#define CHARB 'B'
+	#define CHARC 'C'
+	#define MAP(X, pin, inv, pwm_delay, pwm_compare_register) \
+	g_LED[X##pin##_index].pwm_comparator = CHAR##pwm_compare_register;
+	LED_MAPPING_TABLE(MAP)
+	#undef MAP
+	#undef CHAR0
+	#undef CHARA
+	#undef CHARB
+	#undef CHARC
+#endif
 	/* LED driver */
 	led_ports_init();
 
@@ -105,7 +125,7 @@ static void update_state(uint8_t * p5bytes)
 			uint8_t enable = b & 0x01;
 			// Start timer to turn down currant later
 			if (enable) {
-				LedTimer[ledNumber] = 0;
+				ToyTimer[ledNumber] = 0;
 				if (g_LED[ledNumber].enable == 0) {
 					DbgOut(DBGINFO, "%i ON", ledNumber); \
 				}
@@ -115,6 +135,17 @@ static void update_state(uint8_t * p5bytes)
 				}
 			}
 			g_LED[ledNumber].enable = enable;
+			uint8_t value = enable ? 255 : 0;
+			switch (g_LED[ledNumber].pwm_comparator) {
+				case 'A':
+					OCR4A = value;
+				case 'B':
+					OCR4B = value;
+				case 'C':
+					OCR4C = value;
+				default:
+					break;
+			}
 			b >>= 1;
 		}
 	}
@@ -225,43 +256,61 @@ ISR(LED_TIMER_vect)
 		// increment time counter
 		t += g_dt;
 
+#ifdef ENABLE_PWM_TIMER4
+		// Xavier Hosxe
+		// Turn down currant when timer reached
+		// We check every 10ms
+		#define MAP(X, pin, inv, pwm_delay, C) \
+		if (pwm_delay > 0 && g_LED[X##pin##_index].enable) { \
+			if (ToyTimer[X##pin##_index] < X##pin##_pwm_delay) { \
+				ToyTimer[X##pin##_index]++; \
+			} else if (ToyTimer[X##pin##_index] == X##pin##_pwm_delay) { \
+				OCR4##C = 110;  \
+				ToyTimer[X##pin##_index]++; \
+				DbgOut(DBGINFO, "%i down to %i", X##pin##_index); \
+			} \
+		}
+		LED_MAPPING_TABLE(MAP)
+		#undef MAP
+#endif
+
 		// update pwm values
 		update_pwm(pwm, sizeof(pwm) / sizeof(pwm[0]), t);
+
 	}
 
 	// set or clear all defined pins
-	#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) if ((pwm[X##pin##_index] > counter) == (!inv)) { PORT##X |= (1 << pin); } else { PORT##X &= ~(1 << pin); }
+	// if pwm_delay, it's real PWM
+	#define MAP(X, pin, inv, pwm_delay, pwm_compare_register) \
+	if (pwm_delay == 0) { if ((pwm[X##pin##_index] > counter) == (!inv)) { PORT##X |= (1 << pin); } else { PORT##X &= ~(1 << pin); } } 
 	LED_MAPPING_TABLE(MAP)
+
 	#undef MAP
-
-
-	// Xavier Hosxe
-	// Turn down currant if timer reached
-	#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) \
-	if (g_LED[X##pin##_index].enable && timer_delay > 0) { \
-		if (LedTimer[X##pin##_index] < X##pin##_timer_delay) { \
-			LedTimer[X##pin##_index]++; \
-		} else if (LedTimer[X##pin##_index] == X##pin##_timer_delay) { \
-			g_LED[X##pin##_index].mode = timer_delay_pwm; \
-			LedTimer[X##pin##_index]++; \
-			DbgOut(DBGINFO, "%i down to %i", X##pin##_index, timer_delay_pwm); \
-		} \
-	}
-	LED_MAPPING_TABLE(MAP)
-	#undef MAP
-
-	//
 
 }
 
+//		
 
 static void led_ports_init(void)
 {
-	#define MAP(X, pin, inv, timer_delay, timer_delay_pwm) \
-		PORT##X &= ~(1 << pin); \
-		DDR##X  |= (1 << pin);
+	uint8_t initTimer4 = 0;
+	#define MAP(X, pin, inv, pwm_delay, C) \
+		DDR##X  |= (1 << pin); \
+		if (pwm_delay == 0) {  \
+			PORT##X &= ~(1 << pin);  \
+		} else {  \
+			OCR4##C = 0;  \
+			initTimer4 = 1;  \
+		}
 	LED_MAPPING_TABLE(MAP)
 	#undef MAP
+
+#ifdef ENABLE_PWM_TIMER4
+	if (initTimer4) {
+		TCCR4A = _BV(COM4A1) | _BV(COM4B1) | _BV(WGM42) | _BV(WGM40); 
+		TCCR4B =  _BV(CS40);
+	}
+#endif
 }
 
 #endif

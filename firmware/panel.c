@@ -58,7 +58,7 @@ enum {
 	NUMBER_OF_INPUTS,
 	#undef MAP
 	#if defined(LED_MAPPING_TABLE)
-	#define MAP(port, pin, inv, timer_delay, timer_delay_pwm) port##pin##_index,
+	#define MAP(port, pin, inv, timer_delay, pwm_compare_register) port##pin##_index,
 	LED_MAPPING_TABLE(MAP)
 	#undef MAP
 	#endif

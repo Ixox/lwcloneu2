@@ -2,8 +2,8 @@ Xavier Hosxe note :
 ===================
 My goal for this fork is to add the following feature that i need for my pincab :
 . A working MPU6050 driver (Accelerometer)
-. Possibility to turn down power after a delay (to avoid toys to burn) on each output pin by activating a PWM value.
-. Using real PWM on pin 2 to 13 and 44 to 46 of the arduino mega.
+. Possibility to turn down power after a delay (to avoid toys to burn).
+  This is possible on 4 pins (6,7,8) using real PWM for high frequency (30Khz). (Software PWM made lots of noise with the soleoid).
 
 LWCloneU2
 =========
