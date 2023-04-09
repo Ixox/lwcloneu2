@@ -4,7 +4,8 @@
         "delay.h": "c",
         "devconfig.h": "c",
         "i2cmaster.h": "c",
-        "mpu6050.h": "c"
+        "mpu6050.h": "c",
+        "led_toys_pwm.h": "c"
     },
     "files.exclude": {
         "**/*.o": true,

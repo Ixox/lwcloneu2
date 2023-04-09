@@ -75,6 +75,18 @@ uint16_t ToyTimer[NUMBER_OF_BANKS * 8];
 
 volatile uint16_t g_dt = 256;  // access is not atomic, but the read in the pwm loop is not critical
 
+uint16_t millis_ledTimersize = 1600;
+uint16_t millis_ledTimerOffAt = 800;
+
+volatile unsigned long millis_timer;
+
+unsigned long led_millis(void) {
+	return millis_timer;
+}
+void led_setBlinkTimer(uint16_t size, uint16_t offAt) {
+	millis_ledTimersize = size;
+    millis_ledTimerOffAt = offAt;
+}
 
 static void update_state(uint8_t * p5bytes);
 static void update_profile(int8_t k, uint8_t * p8bytes);
@@ -254,13 +266,24 @@ static void update_pwm(uint8_t *pwm, int8_t n, uint16_t t)
 
 ISR(LED_TIMER_vect)
 {
-	#if defined(ENABLE_PROFILING)
-	profile_start();
-	#endif
-
 	static int8_t counter = 0;
+	static int8_t counterMillis = 0;
 	static uint16_t t = 0;
 	static uint8_t pwm[NUMBER_OF_LEDS];
+
+	counterMillis++;
+	if (counterMillis == 5) {
+		counterMillis = 0;
+		millis_timer++;
+		int ledCheck = millis_timer % millis_ledTimersize;
+		if (ledCheck == 0) {
+			PORTB |= 0b10000000;
+		} else if (ledCheck == millis_ledTimerOffAt) {
+			PORTB &= 0b01111111;
+		}
+	}
+
+	
 
 	counter--;
 
@@ -307,6 +330,8 @@ ISR(LED_TIMER_vect)
 
 static void led_ports_init(void)
 {
+	DDRB |= 0b10000000;
+
 	#define MAP(X, pin, inv, pwm_delay, C) \
 		DDR##X  |= (1 << pin); \
 		if (pwm_delay == 0) {  \

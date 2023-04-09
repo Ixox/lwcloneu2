@@ -35,7 +35,7 @@
 #include "keydefs.h"
 #include "clock.h"
 
-#include "millis_timer.h"
+#include "led_toys_pwm.h"
 
 #ifdef ACCELGYRO_MPU6050
 #include "mpu6050.h"
@@ -285,12 +285,6 @@ static uint8_t NeedMouseUpdate(void) { return need_mouse_update; }
 
 void panel_init(void)
 {
-	millis_init();
-
-	#ifdef ACCELGYRO_MPU6050
-	mpu6050_init();
-	#endif
-
 	#if (NUM_JOYSTICKS >= 1)
 	memset(&need_joystick_update[0], 0x00, sizeof(need_joystick_update));
 	#endif
@@ -311,7 +305,9 @@ void panel_init(void)
 	ADC_init();
 	#endif
 
-
+	#ifdef ACCELGYRO_MPU6050
+	mpu6050_init();
+	#endif
 };
 
 static void SetNeedUpdate(uint8_t index)

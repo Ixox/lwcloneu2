@@ -20,10 +20,12 @@
 // For compatibility
 
 
-#include "mpu6050.h"
 #include "util/delay.h"
+#include <avr/interrupt.h>
+
 #include "comm.h"
-#include "millis_timer.h"
+#include "led_toys_pwm.h"
+#include "mpu6050.h"
 
 #define MPU_ADDR 0x68
 #define BUFFER_LENGTH 32
@@ -54,12 +56,6 @@ int vx_, vy_;
 // average reading on the accelerometer when in the neutral position
 // at rest.
 int cx_, cy_;
-
-// timer for measuring time between get() samples
-unsigned long tGet_;
-
-// timer for measuring time between interrupts
-unsigned long tInt_;
 
 // running sum of readings since last get()
 int32_t xSum_, ySum_;
@@ -98,8 +94,7 @@ uint8_t mpu6050_init(void) {
   txBufferLength = 0;
 
   twi_init();
-  tGet_ = millis();
-  tInt_ = millis();
+  sei();
 
   iAccPrv_ = nAccPrv_ = 0;
 
@@ -113,7 +108,7 @@ uint8_t mpu6050_init(void) {
   twi_readFrom(MPU_ADDR, &whoAmI, 1, true);
   if (whoAmI != 0x68) {
  	  DbgOut(DBGINFO, "## It' not a MPU6050##");
-    millis_setLedTimer(200, 100);
+    led_setBlinkTimer(200, 100);
     return 1;  
   } else {
  	  DbgOut(DBGINFO, "MPU6050 detected ");    
@@ -126,7 +121,7 @@ uint8_t mpu6050_init(void) {
   mpuProblem =  mpu6050_endTransmissionStop();
   if (mpuProblem) {
  	  DbgOut(DBGINFO, "## Could not reset MPU6050");
-    millis_setLedTimer(200, 100);
+    led_setBlinkTimer(200, 100);
     return mpuProblem;  
   } else {
      	  DbgOut(DBGINFO, "I2C device detected on 0x68");    
@@ -467,12 +462,12 @@ void get(int *x, int * y) {
     nSum_ = 0;
 
     // add this sample to the current calibration interval's running total
-     AccHist_t *p = &accPrv_[iAccPrv_];
+    AccHist_t *p = &accPrv_[iAccPrv_];
     AccHist_addAvg(p , ax, ay);
 
     // Auto center every s so check every 0.5s as we need 5 samples
     // We check auto center every 2.5 s
-    uint32_t tCenter = millis();
+    uint32_t tCenter = led_millis();
     if (tCenter > autoCenterCheckTime_ + 500)
     {
         autoCenterCheckTime_ = tCenter;
