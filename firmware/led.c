@@ -30,6 +30,16 @@
 // OCCR40 to allow OOCR40 bellow. When replacing comparator by 0
 int OCR40;
 
+// Real PWM is a 512 counter
+// PWM is 16Khz : there's some latency when goes down, specially with a diode on the solenoid
+// 250 is closer to 400/512
+
+#ifndef PWM_POWER_MAX
+#define PWM_POWER_MAX 280
+#endif
+#ifndef PWM_POWER_SAVING
+#define PWM_POWER_SAVING 100
+#endif
 
 #define MAP(X, pin, inv, pwm_delay, pwm_compare_register) X##pin##_index,
 enum { LED_MAPPING_TABLE(MAP) NUMBER_OF_LEDS };
@@ -135,7 +145,7 @@ static void update_state(uint8_t * p5bytes)
 				}
 			}
 			g_LED[ledNumber].enable = enable;
-			uint8_t value = enable ? 255 : 0;
+			uint16_t value = enable ? PWM_POWER_MAX : 0;
 			switch (g_LED[ledNumber].pwm_comparator) {
 				case 'A':
 					OCR4A = value;
@@ -260,12 +270,12 @@ ISR(LED_TIMER_vect)
 		// Xavier Hosxe
 		// Turn down currant when timer reached
 		// We check every 10ms
-		#define MAP(X, pin, inv, pwm_delay, C) \
+		#define MAP(X, pin, inv, pwm_delay, COMP) \
 		if (pwm_delay > 0 && g_LED[X##pin##_index].enable) { \
 			if (ToyTimer[X##pin##_index] < X##pin##_pwm_delay) { \
 				ToyTimer[X##pin##_index]++; \
 			} else if (ToyTimer[X##pin##_index] == X##pin##_pwm_delay) { \
-				OCR4##C = 110;  \
+				OCR4##COMP = PWM_POWER_SAVING;  \
 				ToyTimer[X##pin##_index]++; \
 				DbgOut(DBGINFO, "%i down to %i", X##pin##_index); \
 			} \
@@ -307,7 +317,12 @@ static void led_ports_init(void)
 
 #ifdef ENABLE_PWM_TIMER4
 	if (initTimer4) {
-		TCCR4A = _BV(COM4A1) | _BV(COM4B1) | _BV(WGM42) | _BV(WGM40); 
+		// https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/ATmega640-1280-1281-2560-2561-Datasheet-DS40002211A.pdf
+		// Spec 17-2 page 145 for WGM
+		// COM4*1 : prescaler 8 
+
+
+		TCCR4A = _BV(COM4A1) | _BV(COM4B1) | _BV(COM4C1) | _BV(WGM42) | _BV(WGM41); 
 		TCCR4B =  _BV(CS40);
 	}
 #endif

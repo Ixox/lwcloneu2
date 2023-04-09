@@ -4,6 +4,8 @@ My goal for this fork is to add the following feature that i need for my pincab 
 . A working MPU6050 driver (Accelerometer)
 . Possibility to turn down power after a delay (to avoid toys to burn).
   This is possible on 4 pins (6,7,8) using real PWM for high frequency (30Khz). (Software PWM made lots of noise with the soleoid).
+Not done yet : 
+. Add a silence input pin to disable noisy toys. Toogle : presse once for silence and agin to noise back.
 
 LWCloneU2
 =========
