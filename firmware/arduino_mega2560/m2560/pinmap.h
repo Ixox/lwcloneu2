@@ -61,13 +61,17 @@
 
 #define PANEL_MAPPING_TABLE(_map_) \
 	\
-	_map_( G, 5,    MOD_LeftControl, 0                 ) /* ( OC0B )              Digital pin 4 (PWM) */ \
-	_map_( E, 3,    MOD_RightControl,0                 ) /* ( OC3A/AIN1 )         Digital pin 5 (PWM) */ \
-	_map_( H, 6,    KEY_5,           KEY_5             ) /* ( OC2B )              Digital pin 9 (PWM) */ \
-	_map_( B, 4,    KEY_A,           KEY_A             ) /* ( OC2A/PCINT4 )       Digital pin 10 (PWM) */ \
-	_map_( B, 5,    KEY_S,           KEY_S             ) /* ( OC1A/PCINT5 )       Digital pin 11 (PWM) */ \
-	_map_( B, 6,    KEY_D,           KEY_D             ) /* ( OC1B/PCINT6 )       Digital pin 12 (PWM) */ \
-	_map_( K, 4,    KEY_2,           AC_Mute           ) /* ( ADC12/PCINT20 )     Analog pin 12 */ \
+	_map_( F, 0,    MOD_LeftShift,  0   /* A0 */         )  \
+	_map_( F, 1,    MOD_RightShift, 0   /* A1 */         )  \
+	_map_( F, 2,    KEY_5,            0   /* A2 */         )  \
+	_map_( F, 3,    KEY_1,            0   /* A3 */         )  \
+	_map_( F, 4,    KEY_Enter,        0   /* A4 */         )  \
+	_map_( F, 5,    KEY_A,            0   /* A5 */         )  \
+	_map_( F, 6,    KEY_B,            0   /* A6 */         )  \
+	_map_( F, 7,    KEY_C,            0   /* A7 */         )  \
+	_map_( K, 0,    KEY_D,            0   /* A8 */         )  \
+	_map_( K, 1,    KEY_E,            0   /* A9 */         )  \
+	_map_( K, 2,    KEY_F,            0   /* A10 */        )  \
 	\
 	/* end */
 
@@ -78,6 +82,6 @@
 	// It will be reported as Joystick Z axis (X and Y will be accelerometer)
 #define ADC_MAPPING_TABLE(_map_) \
 	\
-	_map_( F, 2, 0x02, 0.000, 1.000, ID_AccelGyro, 2 ) /* Analog Pin 2 Z   */ \
+	_map_( K, 7, 0x02, 0.000, 1.000, ID_AccelGyro, 2 ) /* Analog Pin 2 Z   */ \
 	\
 	/* end */
