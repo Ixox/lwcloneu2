@@ -119,6 +119,10 @@ static const uint8_t adc_mux_table[NUM_ADC_CHANNELS] = {
 };
 #endif
 
+#ifdef KEY_MUTE_TOYS
+uint8_t muteToys = false;
+#endif
+
 
 // Shift switch off
 PROGMEM const uint8_t NormalMapping[NUMBER_OF_INPUTS] =
@@ -313,6 +317,17 @@ void panel_init(void)
 static void SetNeedUpdate(uint8_t index)
 {
 	uint8_t key = GetKey(index);
+
+	// Was already debounces 
+#ifdef KEY_MUTE_TOYS
+	uint8_t state = InputState[index];
+	DbgOut(DBGINFO, "Key %d / state 0x%x", key, state);
+	if (key == KEY_MUTE_TOYS && ((state & 0x80) > 1)) {
+		// We just release mute toys key, let's toglle muteToys
+		muteToys = muteToys == 0 ? 1 : 0;
+		DbgOut(DBGINFO, "Mute toys : %d", muteToys);
+	}
+#endif
 
 	if (IsConsumerCode(key))
 	{
@@ -889,6 +904,7 @@ static uint8_t ReportAccelGyro()
 
 #ifdef ACCELGYRO_MPU6050
 
+
 static uint8_t ReportAccelGyro()
 {
 
@@ -903,6 +919,7 @@ static uint8_t ReportAccelGyro()
 	ADC_MAPPING_TABLE(MAP)
 	#undef MAP
 	#endif
+
 
 	ReportBuffer[0] = ID_AccelGyro;
 	

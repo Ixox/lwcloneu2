@@ -79,12 +79,14 @@ static void inline ADC_init(void)
 		(1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // prescaler 128x
 }
 
+#define ADCSRB_MUX5 3
+
 static void inline ADC_setmux(uint8_t mux)
 {
 	ADMUX &= ~0x1F;
 	ADMUX |= mux & 0x1F;
 	ADCSRB &= ~(1 << MUX5);
-	ADCSRB |= (((mux >> 5) & 0x01) << MUX5);
+	ADCSRB |= (((mux >> 5) & 0x01) << ADCSRB_MUX5);
 }
 
 #endif

@@ -69,19 +69,23 @@
 	_map_( F, 5,    KEY_A,            0   /* A5 */         )  \
 	_map_( F, 6,    KEY_B,            0   /* A6 */         )  \
 	_map_( F, 7,    KEY_C,            0   /* A7 */         )  \
-	_map_( K, 0,    KEY_D,            0   /* A8 */         )  \
-	_map_( K, 1,    KEY_E,            0   /* A9 */         )  \
-	_map_( K, 2,    KEY_F,            0   /* A10 */        )  \
 	\
 	/* end */
 
-
 	// (port, pin, mux, value_min, value_max, joyid, axis
-	// for mega2560, mux is 0x00..0x07 => (ADC0..ADC7) and 0x10..0x17 => (ADC8..ADC15)
-	// We'll use analog pin2 for the plunger linear resistor
+	// for mega2560, mux[5:0] is 0x00..0x07 => (ADC0..ADC7) and 0x20..0x27 => (ADC8..ADC15)
+	// see https://ww1.microchip.com/downloads/en/devicedoc/atmel-2549-8-bit-avr-microcontroller-atmega640-1280-1281-2560-2561_datasheet.pdf
+	// Page 282
+	// We'll use analog pin15 for the plunger linear resistor
 	// It will be reported as Joystick Z axis (X and Y will be accelerometer)
+
+// Default is 0.0 / 1.0: depend on installation
+// To verify with debuging or with Game controller properties in Windows
+#define PLUNGER_MIN 0
+#define PLUNGER_MAX 1.58
+
 #define ADC_MAPPING_TABLE(_map_) \
 	\
-	_map_( K, 7, 0x02, 0.000, 1.000, ID_AccelGyro, 2 ) /* Analog Pin 2 Z   */ \
+	_map_( K, 7, 0x27, PLUNGER_MIN, PLUNGER_MAX, ID_AccelGyro, 2 ) /* Analog Pin 15 Z   */ \
 	\
 	/* end */

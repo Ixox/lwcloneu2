@@ -29,6 +29,11 @@
 	void led_update(uint8_t *p8bytes) {}
 #else
 
+// Defined in panel.c
+#ifdef KEY_MUTE_TOYS
+extern uint8_t muteToys;
+#endif
+
 // OCCR40 to allow OOCR40 bellow. When replacing comparator by 0
 int OCR40;
 uint8_t timer4Used = 0;
@@ -162,8 +167,11 @@ static void update_state(uint8_t * p5bytes)
 					DbgOut(DBGINFO, "%i off", ledNumber); \
 				}
 			}
-			g_LED[ledNumber].enable = enable;
+			g_LED[ledNumber].enable = enable;			
 			uint16_t value = enable ? PWM_POWER_MAX : 0;
+			#ifdef KEY_MUTE_TOYS
+			if (muteToys > 0) value = 0;
+			#endif
 			switch (g_LED[ledNumber].pwm_comparator) {
 				case 'A':
 					OCR4A = value;
@@ -298,18 +306,23 @@ ISR(LED_TIMER_vect)
 		// Xavier Hosxe
 		// Turn down currant when timer reached
 		// We check every 10ms
-		#define MAP(X, pin, inv, pwm_delay, COMP) \
-		if (pwm_delay > 0 && g_LED[X##pin##_index].enable) { \
-			if (ToyTimer[X##pin##_index] < X##pin##_pwm_delay) { \
-				ToyTimer[X##pin##_index]++; \
-			} else if (ToyTimer[X##pin##_index] == X##pin##_pwm_delay) { \
-				OCR4##COMP = PWM_POWER_SAVING;  \
-				ToyTimer[X##pin##_index]++; \
-				DbgOut(DBGINFO, "%i down to %i", X##pin##_index); \
-			} \
+		#ifdef KEY_MUTE_TOYS
+		if (muteToys == 0) 
+		#endif
+		{
+			#define MAP(X, pin, inv, pwm_delay, COMP) \
+			if (pwm_delay > 0 && g_LED[X##pin##_index].enable) { \
+				if (ToyTimer[X##pin##_index] < X##pin##_pwm_delay) { \
+					ToyTimer[X##pin##_index]++; \
+				} else if (ToyTimer[X##pin##_index] == X##pin##_pwm_delay) { \
+					OCR4##COMP = PWM_POWER_SAVING;  \
+					ToyTimer[X##pin##_index]++; \
+					DbgOut(DBGINFO, "%i down to %i", X##pin##_index); \
+				} \
+			}
+			LED_MAPPING_TABLE(MAP)
+			#undef MAP
 		}
-		LED_MAPPING_TABLE(MAP)
-		#undef MAP
 
 		// update pwm values
 		update_pwm(pwm, sizeof(pwm) / sizeof(pwm[0]), t);

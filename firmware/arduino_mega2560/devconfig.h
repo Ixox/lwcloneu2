@@ -26,7 +26,12 @@
 
 #define ENABLE_LED_DEVICE
 #define ENABLE_ANALOG_INPUT
+
 #define ENABLE_PANEL_DEVICE
+
+// See keydefs.h : KEY_C = 6
+// Toys are le leds with a delay
+#define KEY_MUTE_TOYS 6
 
 #define NUM_JOYSTICKS 0
 #define USE_MOUSE 0
@@ -35,6 +40,8 @@
 
 #define USE_ACCELGYRO 1
 #define ACCELGYRO_MPU6050 1
+// Does not work
+// #define ACCELGYRO_MPU6050_USE_FIFO 1
 
 #endif
 
