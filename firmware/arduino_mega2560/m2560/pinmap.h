@@ -28,10 +28,6 @@
  * Dedicate to Toys, do not use with PWM for led
  */
 
-
-//	_map_( A, 0, 0, 20) /* ( AD0 )              Digital pin 22 */ 
-//	_map_( A, 1, 0, 20 ) /* ( AD1 )             Digital pin 23 */ 
-
 #define LED_MAPPING_TABLE(_map_) \
 	\
 	_map_( H, 3, 0, 20, A) /* PH3 ( OC4A )	Digital pin 6 (PWM) */ \
@@ -49,38 +45,37 @@
 #define MOUSE_Y_DIR_INDEX   12
 #endif
 
-#define SHIFT_SWITCH_INDEX   13
+#define SHIFT_SWITCH_INDEX   1
 
-
-//	_map_( E, 4,    MOD_LeftShift,   0                 ) /* ( OC3B/INT4 )         Digital pin 2 (PWM) */ 
-//	_map_( E, 5,    MOD_RightShift,  0                 ) /* ( OC3C/INT5 )         Digital pin 3 (PWM) */ 
-//	_map_( H, 3,    KEY_Esc,         0                 ) /* ( OC4A )              Digital pin 6 (PWM) */ 
-//	_map_( H, 4,    KEY_Enter,       0                 ) /* ( OC4B )              Digital pin 7 (PWM) */ 
-//	_map_( H, 5,    KEY_1,           KEY_P             ) /* ( OC4C )              Digital pin 8 (PWM) */ 
 
 
 #define PANEL_MAPPING_TABLE(_map_) \
 	\
-	_map_( F, 0,    MOD_LeftShift,  0   /* A0 */         )  \
-	_map_( F, 1,    MOD_RightShift, 0   /* A1 */         )  \
-	_map_( F, 2,    KEY_5,            0   /* A2 */         )  \
-	_map_( F, 3,    KEY_1,            0   /* A3 */         )  \
-	_map_( F, 4,    KEY_Enter,        0   /* A4 */         )  \
-	_map_( F, 5,    KEY_A,            0   /* A5 */         )  \
-	_map_( F, 6,    KEY_B,            0   /* A6 */         )  \
-	_map_( F, 7,    KEY_C,            0   /* A7 */         )  \
+	_map_( F, 0,    MOD_LeftShift,      AC_VolumeDown      	/* A0 */         )  \
+	_map_( F, 1,    MOD_RightShift,     AC_VolumeUp        	/* A1 */         )  \
+	_map_( F, 2,    MOD_LeftControl,    AC_Mute            	/* A0 */         )  \
+	_map_( F, 3,    MOD_RightControl,   AC_VolumeUp        	/* A1 */         )  \
+	_map_( F, 4,    KEY_5,              KEY_6  				/* A2 */         )  \
+	_map_( F, 5,    KEY_1,              KEY_4  				/* A3 */         )  \
+	_map_( F, 6,    KEY_Esc,        	0   				/* A4 */         )  \
+	_map_( F, 7,    KEY_Enter,        	0   				/* A4 */         )  \
+	_map_( K, 0,    KEY_A,        		KEY_B   			/* A4 */         )  \
+	_map_( K, 1,    KEY_S,        		KEY_C   			/* A4 */         )  \
+	_map_( K, 2,    KEY_D,        		KEY_E   			/* A4 */         )  \
+	_map_( K, 3,    KEY_2,        		KEY_3  				/* A4 */         )  \
 	\
 	/* end */
 
-	// (port, pin, mux, value_min, value_max, joyid, axis
-	// for mega2560, mux[5:0] is 0x00..0x07 => (ADC0..ADC7) and 0x20..0x27 => (ADC8..ADC15)
-	// see https://ww1.microchip.com/downloads/en/devicedoc/atmel-2549-8-bit-avr-microcontroller-atmega640-1280-1281-2560-2561_datasheet.pdf
-	// Page 282
-	// We'll use analog pin15 for the plunger linear resistor
-	// It will be reported as Joystick Z axis (X and Y will be accelerometer)
+// (port, pin, mux, value_min, value_max, joyid, axis
+// for mega2560, mux[5:0] is 0x00..0x07 => (ADC0..ADC7) and 0x20..0x27 => (ADC8..ADC15)
+// see https://ww1.microchip.com/downloads/en/devicedoc/atmel-2549-8-bit-avr-microcontroller-atmega640-1280-1281-2560-2561_datasheet.pdf
+// Page 282
+// We'll use analog pin15 for the plunger linear resistor
+// It will be reported as Joystick Z axis (X and Y will be accelerometer)
 
 // Default is 0.0 / 1.0: depend on installation
 // To verify with debuging or with Game controller properties in Windows
+// The goal is to have a full scale fo the Z axis from one position of the plunger to the oposite position
 #define PLUNGER_MIN 0
 #define PLUNGER_MAX 1.58
 
