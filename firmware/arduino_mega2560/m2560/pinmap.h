@@ -32,9 +32,9 @@
 	\
 	_map_( H, 3, 0, 20, A) /* PH3 ( OC4A )	Digital pin 6 (PWM) */ \
 	_map_( H, 4, 0, 20, B) /* PH4 ( OC4B )	Digital pin 7 (PWM) */ \
-	_map_( A, 0, 0, 0, 0) /* ( AD0 )              Digital pin 22 */  \
-	_map_( A, 1, 0, 0, 0) /* ( AD1 )             Digital pin 23 */  \
-	_map_( A, 2, 0, 0, 0) /* ( AD2 )               Digital pin 24 */ \
+	_map_( B, 4, 0, 0, 0) /*           Digital pin 10 */  \
+	_map_( B, 5, 0, 0, 0) /*           Digital pin 11 */  \
+	_map_( B, 6, 0, 0, 0) /*           Digital pin 12 */ \
 	\
 	/* end */
 
@@ -45,24 +45,23 @@
 #define MOUSE_Y_DIR_INDEX   12
 #endif
 
-#define SHIFT_SWITCH_INDEX   1
+#define SHIFT_SWITCH_INDEX   10
 
 
 
 #define PANEL_MAPPING_TABLE(_map_) \
 	\
-	_map_( F, 0,    MOD_LeftShift,      AC_VolumeDown      	/* A0 */         )  \
-	_map_( F, 1,    MOD_RightShift,     AC_VolumeUp        	/* A1 */         )  \
-	_map_( F, 2,    MOD_LeftControl,    AC_Mute            	/* A0 */         )  \
-	_map_( F, 3,    MOD_RightControl,   AC_VolumeUp        	/* A1 */         )  \
-	_map_( F, 4,    KEY_5,              KEY_6  				/* A2 */         )  \
-	_map_( F, 5,    KEY_1,              KEY_4  				/* A3 */         )  \
-	_map_( F, 6,    KEY_Esc,        	0   				/* A4 */         )  \
-	_map_( F, 7,    KEY_Enter,        	0   				/* A4 */         )  \
-	_map_( K, 0,    KEY_A,        		KEY_B   			/* A4 */         )  \
-	_map_( K, 1,    KEY_S,        		KEY_C   			/* A4 */         )  \
-	_map_( K, 2,    KEY_D,        		KEY_E   			/* A4 */         )  \
-	_map_( K, 3,    KEY_2,        		KEY_3  				/* A4 */         )  \
+	_map_( F, 0,    MOD_LeftShift,      AC_VolumeDown      				)  \
+	_map_( F, 1,    MOD_RightShift,     AC_VolumeUp        			)  \
+	_map_( F, 2,    MOD_LeftControl,    AC_Mute      	)  \
+	_map_( F, 3,    MOD_RightControl,   KEY_M       	)  \
+	_map_( F, 4,    AG_Button1,              AG_Button5  				)  \
+	_map_( F, 5,    AG_Button2,              AG_Button6  				)  \
+	_map_( F, 6,    KEY_Esc,        	0   				)  \
+	_map_( F, 7,    KEY_Enter,        	0   				)  \
+	_map_( L, 0,    AG_Button3,        		AG_Button7   			)  \
+	_map_( L, 2,    AG_Button4,        		AG_Button8   			)  \
+	_map_( L, 4,    KEY_E,        	    0   		    )  \
 	\
 	/* end */
 
@@ -76,8 +75,8 @@
 // Default is 0.0 / 1.0: depend on installation
 // To verify with debuging or with Game controller properties in Windows
 // The goal is to have a full scale fo the Z axis from one position of the plunger to the oposite position
-#define PLUNGER_MIN 0
-#define PLUNGER_MAX 1.58
+#define PLUNGER_MIN -1.0
+#define PLUNGER_MAX 3.0
 
 #define ADC_MAPPING_TABLE(_map_) \
 	\

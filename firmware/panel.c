@@ -747,8 +747,10 @@ static int16_t joyval12(uint16_t x, int16_t minval, int16_t maxval)
 }
 
 static int8_t joyval8(uint16_t x, int16_t minval, int16_t maxval)
-{
-	return (int8_t)(((int32_t)x * (int32_t)(maxval - minval) + (1 << 9)) >> 10) + minval - 127;
+{	int16_t value = (((int32_t)x * (int32_t)(maxval - minval) + (1 << 9)) >> 10) + minval - 127;
+	if (value > 127) value = 127;
+	if (value < -127) value = -127;
+	return (int8_t)value;
 }
 
 #endif
@@ -837,7 +839,7 @@ static uint8_t ReportAccelGyro()
 	int8_t joy_rz = 0;
 	uint8_t joy_b = 0;
 
-	ReportBuffer[0] = id;
+	ReportBuffer[0] = ID_AccelGyro;
 
 	#if defined(ENABLE_ANALOG_INPUT) && defined(ADC_MAPPING_TABLE)
 	#define MAP(port, pin, mux, minval, maxval, joyid, axis) \
@@ -907,11 +909,10 @@ static uint8_t ReportAccelGyro()
 
 static uint8_t ReportAccelGyro()
 {
-
 	int8_t acc_x = 0;
 	int8_t acc_y = 0;
 	int8_t plunger_z = 0;
-
+	uint8_t joy_b = 0;
 
 	#if defined(ENABLE_ANALOG_INPUT) && defined(ADC_MAPPING_TABLE)
 	#define MAP(port, pin, mux, minval, maxval, joyid, axis) \
@@ -926,13 +927,52 @@ static uint8_t ReportAccelGyro()
 	int x = 0, y = 0;
 	mpu6050_ReadData(&x, &y);
 
+	for (uint8_t i = 0; i < NUMBER_OF_INPUTS; i++)
+	{
+		if (IsKeyDown(i))
+		{
+			uint8_t key = GetKey(i);
+			switch (key)
+			{
+			case AG_Button1:
+				joy_b |= 0b00000001;
+				break;
+			case AG_Button2:
+				joy_b |= 0b00000010;
+				break;
+			case AG_Button3:
+				joy_b |= 0b00000100;
+				break;
+			case AG_Button4:
+				joy_b |= 0b00001000;
+				break;
+			case AG_Button5:
+				joy_b |= 0b00010000;
+				break;
+			case AG_Button6:
+				joy_b |= 0b00100000;
+				break;
+			case AG_Button7:
+				joy_b |= 0b01000000;
+				break;
+			case AG_Button8:
+				joy_b |= 0b10000000;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+
+
 	ReportBuffer[1] = x;
 	ReportBuffer[2] = y;
 	ReportBuffer[3] = plunger_z;
 	ReportBuffer[4] = 0;
 	ReportBuffer[5] = 0;
 	ReportBuffer[6] = 0;
-	ReportBuffer[7] = 0;
+	ReportBuffer[7] = joy_b;
 
 	return 8;
 }
