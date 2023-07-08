@@ -27,6 +27,10 @@
  * 4th param is a timer delay after which pwm will be activate dot turn down currant. Scale is 10ms. So 20 = 200ms
  * Dedicate to Toys, do not use with PWM for led
  */
+/* 
+    mega 2560 pinout 
+    https://ouilogique.com/files/2015-05-28-pinouts/images/arduino_mega_2560.png
+*/
 
 #define LED_MAPPING_TABLE(_map_) \
 	\
@@ -35,8 +39,14 @@
 	_map_( B, 4, 0, 0, 0) /*           Digital pin 10 */  \
 	_map_( B, 5, 0, 0, 0) /*           Digital pin 11 */  \
 	_map_( B, 6, 0, 0, 0) /*           Digital pin 12 */ \
+	_map_( E, 5, 0, 0, 0) /*           Digital pin 3 */ \
+	_map_( H, 6, 0, 0, 0) /*           Digital pin 9 */ \
+	_map_( E, 3, 0, 0, 0) /*           Digital pin 5 */
 	\
 	/* end */
+
+
+
 
 #if (USE_MOUSE)
 #define MOUSE_X_CLK_INDEX    9
@@ -46,8 +56,6 @@
 #endif
 
 #define SHIFT_SWITCH_INDEX   10
-
-
 
 #define PANEL_MAPPING_TABLE(_map_) \
 	\
@@ -75,8 +83,8 @@
 // Default is 0.0 / 1.0: depend on installation
 // To verify with debuging or with Game controller properties in Windows
 // The goal is to have a full scale fo the Z axis from one position of the plunger to the oposite position
-#define PLUNGER_MIN -1.0
-#define PLUNGER_MAX 3.0
+#define PLUNGER_MIN -1.5
+#define PLUNGER_MAX 1.88
 
 #define ADC_MAPPING_TABLE(_map_) \
 	\

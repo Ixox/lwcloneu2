@@ -746,8 +746,10 @@ static int16_t joyval12(uint16_t x, int16_t minval, int16_t maxval)
 	return (int16_t)(((int32_t)x * (int32_t)(maxval - minval) + (1 << 9)) >> 10) + minval - 2047;
 }
 
+
 static int8_t joyval8(uint16_t x, int16_t minval, int16_t maxval)
-{	int16_t value = (((int32_t)x * (int32_t)(maxval - minval) + (1 << 9)) >> 10) + minval - 127;
+{	
+	int32_t value = (((int32_t)x * (int32_t)(maxval - minval) + (1 << 9)) >> 10) + minval - 127;
 	if (value > 127) value = 127;
 	if (value < -127) value = -127;
 	return (int8_t)value;
